@@ -1,10 +1,8 @@
 package BeroepsProduct.Datastructure;
 
-import java.util.EmptyStackException;
 import java.util.LinkedList;
 
-
-public class Stack <T> {
+public class Stack<T> {
     private LinkedList<T> list = new LinkedList<>();
 
     public void push(T item) {
@@ -12,10 +10,7 @@ public class Stack <T> {
     }
 
     public T pop() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        return list.removeFirst();
+        return list.pollFirst();
     }
 
     public boolean isEmpty() {

@@ -10,7 +10,7 @@ public class Queue <T> {
     }
 
     public T dequeue() {
-        return list.removeFirst();
+        return list.pollFirst();
     }
 
     public boolean isEmpty() {
