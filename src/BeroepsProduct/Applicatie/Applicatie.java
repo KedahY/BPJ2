@@ -2,8 +2,12 @@ package BeroepsProduct.Applicatie;
 import BeroepsProduct.Model.*;
 import BeroepsProduct.Datastructure.*;
 
+import java.util.Scanner;
+
 public class Applicatie {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
         Verkeerslicht noordLicht = new Verkeerslicht();
         Verkeerslicht zuidLicht = new Verkeerslicht();
         Verkeerslicht oostLicht = new Verkeerslicht();
@@ -50,12 +54,15 @@ public class Applicatie {
             if (noordLicht.getToestand().equals("groen")) {
                 while (!noordQueue.isEmpty()) {
                     Voertuig voertuig = noordQueue.dequeue();
+                    System.out.println("Noord: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
                     reversePlaybackStack.push(voertuig);
                 }
                 noordLicht.veranderToestand("geel");
             } else if (noordLicht.getToestand().equals("geel")) {
+                System.out.println("Noord: Licht is geel.");
                 noordLicht.veranderToestand("rood");
             } else if (noordLicht.getToestand().equals("rood")) {
+                System.out.println("Noord: Licht is rood.");
                 sensor4.activeer();
                 if (sensor4.geenVoertuigenAanwezig()) {
                     noordLicht.veranderToestand("groen");
@@ -66,12 +73,15 @@ public class Applicatie {
             if (zuidLicht.getToestand().equals("groen")) {
                 while (!zuidQueue.isEmpty() && (zuidQueue.size() > 10 || sensor2.geenVoertuigenAanwezig())) {
                     Voertuig voertuig = zuidQueue.dequeue();
+                    System.out.println("Zuid: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
                     reversePlaybackStack.push(voertuig);
                 }
                 zuidLicht.veranderToestand("geel");
             } else if (zuidLicht.getToestand().equals("geel")) {
+                System.out.println("Zuid: Licht is geel.");
                 zuidLicht.veranderToestand("rood");
             } else if (zuidLicht.getToestand().equals("rood")) {
+                System.out.println("Zuid: Licht is rood.");
                 sensor2.activeer();
                 if (sensor2.geenVoertuigenAanwezig()) {
                     zuidLicht.veranderToestand("groen");
@@ -82,12 +92,15 @@ public class Applicatie {
             if (oostLicht.getToestand().equals("groen")) {
                 while (!oostQueue.isEmpty()) {
                     Voertuig voertuig = oostQueue.dequeue();
+                    System.out.println("Oost: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
                     reversePlaybackStack.push(voertuig);
                 }
                 oostLicht.veranderToestand("geel");
             } else if (oostLicht.getToestand().equals("geel")) {
+                System.out.println("Oost: Licht is geel.");
                 oostLicht.veranderToestand("rood");
             } else if (oostLicht.getToestand().equals("rood")) {
+                System.out.println("Oost: Licht is rood.");
                 sensor1.activeer();
                 if (sensor1.geenVoertuigenAanwezig()) {
                     oostLicht.veranderToestand("groen");
@@ -98,18 +111,34 @@ public class Applicatie {
             if (westLicht.getToestand().equals("groen")) {
                 while (!westQueue.isEmpty() && (westQueue.size() > 10 || sensor3.geenVoertuigenAanwezig())) {
                     Voertuig voertuig = westQueue.dequeue();
+                    System.out.println("West: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
                     reversePlaybackStack.push(voertuig);
                 }
                 westLicht.veranderToestand("geel");
             } else if (westLicht.getToestand().equals("geel")) {
+                System.out.println("West: Licht is geel.");
                 westLicht.veranderToestand("rood");
             } else if (westLicht.getToestand().equals("rood")) {
+                System.out.println("West: Licht is rood.");
                 sensor3.activeer();
                 if (sensor3.geenVoertuigenAanwezig()) {
                     westLicht.veranderToestand("groen");
                 }
             }
+
+            // Pauzeer voor invoer om de simulatie stapsgewijs te maken
+            System.out.println("Druk op Enter om de simulatie voort te zetten...");
+            scanner.nextLine();
         }
+
+        // Reverse playback logica
+        System.out.println("Alle voertuigen zijn gepasseerd. Begin met reverse playback.");
+        while (!reversePlaybackStack.isEmpty()) {
+            Voertuig voertuig = reversePlaybackStack.pop();
+            System.out.println("Voertuig met kenteken " + voertuig.getKenteken() + " wordt teruggeplaatst.");
+        }
+
+        scanner.close();
     }
 
     // Methode om te controleren of alle voertuigen zijn doorgegaan
@@ -117,4 +146,3 @@ public class Applicatie {
         return noord.isEmpty() && zuid.isEmpty() && oost.isEmpty() && west.isEmpty();
     }
 }
-
