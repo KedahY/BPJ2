@@ -27,15 +27,15 @@ public class Applicatie {
         Stack<Voertuig> reversePlaybackStack = new Stack<>();
 
         // Voeg voertuigen toe aan de queues zoals beschreven in de opdracht
-        noordQueue.enqueue(new Voertuig(1, "ABC123", ""));
-        noordQueue.enqueue(new Voertuig(2, "DEF456", ""));
-        noordQueue.enqueue(new Voertuig(3, "GHI789", "ambulance"));
-        noordQueue.enqueue(new Voertuig(4, "JKL012", ""));
+        noordQueue.enqueue(new Voertuig(1, "PM-23-43", ""));
+        noordQueue.enqueue(new Voertuig(2, "PM-26-40", ""));
+        noordQueue.enqueue(new Voertuig(3, "PM-22-49", "ambulance"));
+        noordQueue.enqueue(new Voertuig(4, "PM-28-48", ""));
 
         for (int i = 1; i <= 17; i++) {
             zuidQueue.enqueue(new Voertuig(i, "Z" + i, ""));
         }
-        zuidQueue.enqueue(new Voertuig(18, "MNO345", "brandweer"));
+        zuidQueue.enqueue(new Voertuig(18, "PH-78-29", "brandweer"));
 
         for (int i = 1; i <= 5; i++) {
             oostQueue.enqueue(new Voertuig(i, "E" + i, ""));
@@ -44,7 +44,7 @@ public class Applicatie {
         for (int i = 1; i <= 8; i++) {
             westQueue.enqueue(new Voertuig(i, "W" + i, ""));
         }
-        westQueue.enqueue(new Voertuig(9, "PQR678", "politie"));
+        westQueue.enqueue(new Voertuig(9, "PC-34-56", "politie"));
         for (int i = 10; i <= 14; i++) {
             westQueue.enqueue(new Voertuig(i, "W" + i, ""));
         }
