@@ -22,4 +22,8 @@ public class Voertuig {
     public String getPrioriteit() {
         return prioriteit;
     }
+
+    public String getType() {
+        return prioriteit;
+    }
 }

@@ -5,6 +5,7 @@ import BeroepsProduct.Datastructure.*;
 import java.util.Scanner;
 
 public class Applicatie {
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -54,8 +55,20 @@ public class Applicatie {
             if (noordLicht.getToestand().equals("groen")) {
                 while (!noordQueue.isEmpty()) {
                     Voertuig voertuig = noordQueue.dequeue();
-                    System.out.println("Noord: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
-                    reversePlaybackStack.push(voertuig);
+                    if (voertuig.getType().equals("ambulance") || voertuig.getType().equals("politie") || voertuig.getType().equals("brandweer")) {
+                        System.out.println("Noord: Voertuig met kenteken " + voertuig.getKenteken() + " (type: " + voertuig.getType() + ") heeft voorrang en rijdt door.");
+                        // Leeg de rest van de queue voor deze richting
+                        while (!noordQueue.isEmpty()) {
+                            Voertuig stopVoertuig = noordQueue.dequeue();
+                            System.out.println("Noord: Voertuig met kenteken " + stopVoertuig.getKenteken() + " moet stoppen.");
+                            reversePlaybackStack.push(stopVoertuig);
+                        }
+                        // Stop andere richtingen ook
+                        stopVoertuigenInAndereRichtingen(zuidQueue, oostQueue, westQueue);
+                    } else {
+                        System.out.println("Noord: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
+                        reversePlaybackStack.push(voertuig);
+                    }
                 }
                 noordLicht.veranderToestand("geel");
             } else if (noordLicht.getToestand().equals("geel")) {
@@ -69,30 +82,42 @@ public class Applicatie {
                 }
             }
 
-            // Zuid verkeerslicht logica
-            if (zuidLicht.getToestand().equals("groen")) {
-                while (!zuidQueue.isEmpty() && (zuidQueue.size() > 10 || sensor2.geenVoertuigenAanwezig())) {
-                    Voertuig voertuig = zuidQueue.dequeue();
-                    System.out.println("Zuid: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
-                    reversePlaybackStack.push(voertuig);
+            // West verkeerslicht logica
+            if (westLicht.getToestand().equals("groen")) {
+                while (!westQueue.isEmpty()) {
+                    Voertuig voertuig = westQueue.dequeue();
+                    if (voertuig.getType().equals("ambulance") || voertuig.getType().equals("politie") || voertuig.getType().equals("brandweer")) {
+                        System.out.println("West: Voertuig met kenteken " + voertuig.getKenteken() + " (type: " + voertuig.getType() + ") heeft voorrang en rijdt door.");
+                        // Leeg de rest van de queue voor deze richting
+                        while (!westQueue.isEmpty()) {
+                            Voertuig stopVoertuig = westQueue.dequeue();
+                            System.out.println("West: Voertuig met kenteken " + stopVoertuig.getKenteken() + " moet stoppen.");
+                            reversePlaybackStack.push(stopVoertuig);
+                        }
+                        // Stop andere richtingen ook
+                        stopVoertuigenInAndereRichtingen(noordQueue, zuidQueue, oostQueue);
+                    } else {
+                        System.out.println("West: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
+                        reversePlaybackStack.push(voertuig);
+                    }
                 }
-                zuidLicht.veranderToestand("geel");
-            } else if (zuidLicht.getToestand().equals("geel")) {
-                System.out.println("Zuid: Licht is geel.");
-                zuidLicht.veranderToestand("rood");
-            } else if (zuidLicht.getToestand().equals("rood")) {
-                System.out.println("Zuid: Licht is rood.");
-                sensor2.activeer();
-                if (sensor2.geenVoertuigenAanwezig()) {
-                    zuidLicht.veranderToestand("groen");
+                westLicht.veranderToestand("geel");
+            } else if (westLicht.getToestand().equals("geel")) {
+                System.out.println("West: Licht is geel.");
+                westLicht.veranderToestand("rood");
+            } else if (westLicht.getToestand().equals("rood")) {
+                System.out.println("West: Licht is rood.");
+                sensor3.activeer();
+                if (sensor3.geenVoertuigenAanwezig()) {
+                    westLicht.veranderToestand("groen");
                 }
             }
 
-            // Oost verkeerslicht logica
+            // Oost verkeerslicht logica (aangenomen dat Oost-voertuigen altijd stoppen tenzij anders vermeld)
             if (oostLicht.getToestand().equals("groen")) {
                 while (!oostQueue.isEmpty()) {
                     Voertuig voertuig = oostQueue.dequeue();
-                    System.out.println("Oost: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
+                    System.out.println("Oost: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
                     reversePlaybackStack.push(voertuig);
                 }
                 oostLicht.veranderToestand("geel");
@@ -107,22 +132,33 @@ public class Applicatie {
                 }
             }
 
-            // West verkeerslicht logica
-            if (westLicht.getToestand().equals("groen")) {
-                while (!westQueue.isEmpty() && (westQueue.size() > 10 || sensor3.geenVoertuigenAanwezig())) {
-                    Voertuig voertuig = westQueue.dequeue();
-                    System.out.println("West: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
-                    reversePlaybackStack.push(voertuig);
+            // Zuid verkeerslicht logica
+            if (zuidLicht.getToestand().equals("groen")) {
+                while (!zuidQueue.isEmpty()) {
+                    Voertuig voertuig = zuidQueue.dequeue();
+                    if (voertuig.getType().equals("brandweer")) {
+                        System.out.println("Zuid: Voertuig met kenteken " + voertuig.getKenteken() + " (type: " + voertuig.getType() + ") heeft voorrang en rijdt door.");
+                        // Leeg de rest van de queue voor deze richting
+                        while (!zuidQueue.isEmpty()) {
+                            Voertuig stopVoertuig = zuidQueue.dequeue();
+                            System.out.println("Zuid: Voertuig met kenteken " + stopVoertuig.getKenteken() + " moet stoppen.");
+                            reversePlaybackStack.push(stopVoertuig);
+                        }
+                        // Stop andere richtingen ook
+                        stopVoertuigenInAndereRichtingen(noordQueue, westQueue, oostQueue);
+                    } else {
+                        System.out.println("Zuid: Voertuig met kenteken " + voertuig.getKenteken() + " rijdt door.");
+                    }
                 }
-                westLicht.veranderToestand("geel");
-            } else if (westLicht.getToestand().equals("geel")) {
-                System.out.println("West: Licht is geel.");
-                westLicht.veranderToestand("rood");
-            } else if (westLicht.getToestand().equals("rood")) {
-                System.out.println("West: Licht is rood.");
-                sensor3.activeer();
-                if (sensor3.geenVoertuigenAanwezig()) {
-                    westLicht.veranderToestand("groen");
+                zuidLicht.veranderToestand("geel");
+            } else if (zuidLicht.getToestand().equals("geel")) {
+                System.out.println("Zuid: Licht is geel.");
+                zuidLicht.veranderToestand("rood");
+            } else if (zuidLicht.getToestand().equals("rood")) {
+                System.out.println("Zuid: Licht is rood.");
+                sensor2.activeer();
+                if (sensor2.geenVoertuigenAanwezig()) {
+                    zuidLicht.veranderToestand("groen");
                 }
             }
 
@@ -141,8 +177,29 @@ public class Applicatie {
         scanner.close();
     }
 
-    // Methode om te controleren of alle voertuigen zijn doorgegaan
-    private static boolean alleVoertuigenDoorgegaan(Queue<Voertuig> noord, Queue<Voertuig> zuid, Queue<Voertuig> oost, Queue<Voertuig> west) {
-        return noord.isEmpty() && zuid.isEmpty() && oost.isEmpty() && west.isEmpty();
+    private static void stopVoertuigenInAndereRichtingen(Queue<Voertuig> zuidQueue, Queue<Voertuig> oostQueue, Queue<Voertuig> westQueue) {
+    }
+
+    private static boolean alleVoertuigenDoorgegaan(Queue<Voertuig> noordQueue, Queue<Voertuig> zuidQueue, Queue<Voertuig> oostQueue, Queue<Voertuig> westQueue) {
+        return noordQueue.isEmpty() && zuidQueue.isEmpty() && oostQueue.isEmpty() && westQueue.isEmpty();
+    }
+
+    private static void stopVoertuigenInAndereRichtingen(Queue<Voertuig> noordQueue, Queue<Voertuig> zuidQueue, Queue<Voertuig> oostQueue, Queue<Voertuig> westQueue) {
+        while (!noordQueue.isEmpty()) {
+            Voertuig voertuig = noordQueue.dequeue();
+            System.out.println("Noord: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
+        }
+        while (!zuidQueue.isEmpty()) {
+            Voertuig voertuig = zuidQueue.dequeue();
+            System.out.println("Zuid: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
+        }
+        while (!oostQueue.isEmpty()) {
+            Voertuig voertuig = oostQueue.dequeue();
+            System.out.println("Oost: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
+        }
+        while (!westQueue.isEmpty()) {
+            Voertuig voertuig = westQueue.dequeue();
+            System.out.println("West: Voertuig met kenteken " + voertuig.getKenteken() + " moet stoppen.");
+        }
     }
 }
